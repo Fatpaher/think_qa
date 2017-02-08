@@ -20,6 +20,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+gem 'slim'
 
 group :development, :test do
   gem 'byebug', platform: :mri
@@ -35,8 +36,10 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-group :development, :test do
+group :test do
   gem 'shoulda-matchers'
+  gem 'rails-controller-testing'
+  gem 'database_cleaner'
 end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
