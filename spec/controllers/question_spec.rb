@@ -27,37 +27,105 @@ describe QuestionsController do
   end
 
   describe 'GET #new' do
-    before { get :new }
-    it 'it assigns new question to @question' do
-      expect(assigns(:question)).to be_a_new(Question)
+    context 'user signed in' do
+      sign_in_user
+      before { get :new }
+      it 'it assigns new question to @question' do
+        expect(assigns(:question)).to be_a_new(Question)
+      end
+
+      it 'renders :new template' do
+        expect(response).to render_template(:new)
+      end
     end
 
-    it 'renders :new template' do
-      expect(response).to render_template(:new)
+    context 'user not signed in' do
+      before { get :new }
+      it 'redirect to sign in url' do
+        expect(response).to redirect_to(new_user_session_path)
+      end
     end
   end
 
-  describe 'POST :create' do
-    context 'with valid attributes' do
-      let(:question) { attributes_for(:question) }
-      it 'saves new question to database' do
-        expect { post :create, params: { question: question } }.to change(Question, :count).by(1)
-      end
+  describe 'POST #create' do
+    context 'user signed in' do
+      sign_in_user
 
-      it 'redirect to created question show page' do
-        post :create, params: { question: question }
-        expect(response).to redirect_to(Question.last)
+      context 'with valid attributes' do
+        let(:question) { attributes_for(:question) }
+        it 'saves new question to database attached to user' do
+          params = { question: question }
+          expect { post :create, params: params }.to change(@user.questions, :count).by(1)
+        end
+
+        it 'redirect to created question show page' do
+          post :create, params: { question: question }
+          expect(response).to redirect_to(Question.last)
+        end
+      end
+      context 'with invalid attributes' do
+        let(:question) { attributes_for(:question, :invalid) }
+        it "doesn't save question to database" do
+          expect { post :create, params: { question: question } }.not_to change(Question, :count)
+        end
+
+        it 're-render :new template' do
+          post :create, params: { question: question }
+          expect(response).to render_template(:new)
+        end
       end
     end
-    context 'with invalid attributes' do
-      let(:question) { attributes_for(:question, :invalid) }
-      it "doesn't save question to database" do
+
+    context 'user not signed in' do
+      let(:question) { attributes_for(:question) }
+      it 'not saves new question to database' do
         expect { post :create, params: { question: question } }.not_to change(Question, :count)
       end
 
-      it 're-render :new template' do
+      it 'redirect to sign in url' do
         post :create, params: { question: question }
-        expect(response).to render_template(:new)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    context 'sign in user' do
+      sign_in_user
+      context 'user_id of question eq user' do
+        let(:question) { create(:question, user_id: @user.id) }
+
+        it 'destroys question' do
+          params = { id: question }
+          expect { delete :destroy, params: params }.to change(@user.questions, :count).by(-1)
+        end
+
+        it 'redirect to question list' do
+          delete :destroy, params: { id: question }
+          expect(response).to redirect_to(questions_path)
+        end
+      end
+
+      context 'user_id of question not eq user' do
+        let(:question) { create(:question) }
+
+        it_behaves_like "can't delete question"
+
+        it 're-reder question page' do
+          delete :destroy, params: { id: question }
+          expect(response).to render_template('questions/show')
+        end
+      end
+    end
+
+    context 'not sign in user' do
+      let(:question) { create(:question) }
+
+      it_behaves_like "can't delete question"
+
+      it 'redirecto to sign in path' do
+        delete :destroy, params: { id: question.id }
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end

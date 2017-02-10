@@ -1,1 +1,10 @@
-New
+h1 Ask New Question
+= form_for @question do |f|
+  = render "shared/error_messages", target: @question
+  .form-group
+    = f.label :title
+    = f.text_field :title
+  .form-group
+    = f.label :body
+    = f.text_field :body
+  = f.submit class: 'btn btn-primary'
