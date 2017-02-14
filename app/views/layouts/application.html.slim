@@ -9,8 +9,7 @@ html
   body
     .container
       = render partial: 'layouts/header'
-      p.notice= notice
-      p.alert= alert
+      .flash_messages= render partial: 'layouts/flash_messages'
       .main-content
         = yield
 

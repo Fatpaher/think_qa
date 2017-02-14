@@ -14,20 +14,21 @@ describe AnswersController do
           params = { question_id: question.id,
                     answer: answer_attr }
 
-          expect { post :create, params: params }.to change(question.answers, :count).by(1)
+          expect { post :create, params: params, format: :js }.to change(question.answers, :count).by(1)
         end
 
         it 'creates new answer assigned to user' do
           params = { question_id: question.id,
                     answer: answer_attr }
 
-          expect { post :create, params: params }.to change(@user.answers, :count).by(1)
+          expect { post :create, params: params, format: :js }.to change(@user.answers, :count).by(1)
         end
 
-        it 'redirect to answer page' do
-          post :create, params: { question_id: question.id,
-                                  answer: answer_attr }
-          expect(response).to redirect_to(question_path(question))
+        it 'render create template' do
+          params = { question_id: question.id,
+                     answer: answer_attr }
+          post :create, params: params, format: :js
+          expect(response).to render_template(:create)
         end
       end
 
@@ -38,13 +39,14 @@ describe AnswersController do
           params = { question_id: question.id,
                     answer: invalid_answer_attr }
 
-          expect { post :create, params: params }.not_to change(Answer, :count)
+          expect { post :create, params: params, format: :js }.not_to change(Answer, :count)
         end
 
         it 're-renders answer page' do
-          post :create, params: { question_id: question.id,
-                                  answer: invalid_answer_attr }
-          expect(response).to render_template('questions/show')
+          params = { question_id: question.id,
+                     answer: invalid_answer_attr }
+          post :create, params: params, format: :js
+          expect(response).to render_template(:create)
         end
       end
     end
@@ -56,13 +58,14 @@ describe AnswersController do
         params = { question_id: question.id,
                    answer: answer_attr }
 
-        expect { post :create, params: params }.not_to change(Answer, :count)
+        expect { post :create, params: params, format: :js }.not_to change(Answer, :count)
       end
 
       it 'redrect to root page' do
-        post :create, params: { question_id: question.id,
-                                answer: answer_attr }
-        expect(response).to redirect_to(new_user_session_path)
+        params = { question_id: question.id,
+                   answer: answer_attr }
+        post :create, params: params, format: :js
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

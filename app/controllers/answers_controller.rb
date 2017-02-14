@@ -7,9 +7,9 @@ class AnswersController < ApplicationController
     @answer.user = current_user
 
     if @answer.save
-      redirect_to question_path(@question), notice: 'Answer succsesfully added'
+      flash.now[:notice] = 'Answer succsesfully added'
     else
-      render 'questions/show'
+      flash.now[:alert] = 'Error'
     end
   end
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'user visit question page' do
+feature 'user visit question page', js: true do
   let(:question) { create(:question) }
 
   context 'signed in' do
