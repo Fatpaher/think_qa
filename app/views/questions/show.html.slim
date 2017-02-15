@@ -1,24 +1,15 @@
-h1= @question.title
-.question-body
-  = @question.body
-- if current_user&.author_of?(@question)
-  = link_to 'Delete Question',
-    question_path(@question),
-    class: 'btn btn-danger',
-    method: :delete,
-    data: { confirm: 'Are you shure want to delete this question?' }
-
+.question
+  = render @question
 h3 Answers
 - if @question.answers.present?
-  ul
-    .answers
-      = render @question.answers
+  .answers
+    = render @question.answers
 - else
   p There is no answers yet
 
 - if user_signed_in?
   = form_for [@question, @answer], remote: true do |f|
-    .form_errors
+    .answer_form_errors
       = render "shared/error_messages", target: @answer
     .form-group
       = f.label :body, 'Your Answer'

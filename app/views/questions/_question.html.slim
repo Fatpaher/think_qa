@@ -1,0 +1,27 @@
+.question-title
+  h1= @question.title
+.question-body
+  = @question.body
+
+.edit-question
+  = form_for @question, remote: true  do |f|
+    .question_form_errors
+      = render "shared/error_messages", target: @question
+    .form-group
+      = f.label :title
+      = f.text_field :title, value: @question.title
+    .form-group
+      = f.label :body
+      = f.text_field :body, value: @question.body
+    = f.submit class: 'btn btn-default'
+
+- if current_user&.author_of?(@question)
+  = link_to 'Edit Question',
+    '#',
+    class: 'btn btn-default edit-question-link'
+
+  = link_to 'Delete Question',
+    question_path(@question),
+    class: 'btn btn-danger',
+    method: :delete,
+    data: { confirm: 'Are you shure want to delete this question?' }

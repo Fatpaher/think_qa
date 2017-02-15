@@ -7,7 +7,7 @@ feature 'user visit question page' do
     given(:user) { create(:user) }
     before { sign_in user }
 
-    scenario 'can delete his own answer' do
+    scenario 'can delete his own answer', js: true do
       answer = create(:answer, user: user, question: question)
       visit question_path(question)
 

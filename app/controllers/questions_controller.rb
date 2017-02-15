@@ -1,5 +1,5 @@
 class QuestionsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :destroy]
+  before_action :authenticate_user!, only: [:new, :create, :destroy, :update]
 
   def index
     @questions = Question.all
@@ -8,6 +8,7 @@ class QuestionsController < ApplicationController
   def show
     @question = Question.includes(:answers).find(params[:id])
     @answer = @question.answers.new if user_signed_in?
+    @question = QuestionWithRightAnswer.new(@question)
   end
 
   def new
@@ -19,9 +20,20 @@ class QuestionsController < ApplicationController
     @question.user = current_user
 
     if @question.save
-      redirect_to question_path(@question), notice: 'Question succsesfully created'
+      redirect_to question_path(@question), notice: 'Question successfully created'
     else
       render :new
+    end
+  end
+
+  def update
+    @question = Question.find(params[:id])
+    return unless current_user.author_of?(@question)
+
+    if @question.update(question_params)
+      flash.now[:notice] = 'Question was successfully edit'
+    else
+      flash.now[:alert] = 'Error'
     end
   end
 
