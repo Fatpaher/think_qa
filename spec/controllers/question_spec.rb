@@ -89,6 +89,58 @@ describe QuestionsController do
     end
   end
 
+  describe 'PATCH #update' do
+    context 'sign in user' do
+      sign_in_user
+
+      context 'author of question' do
+        let(:question) { create(:question, user_id: @user.id) }
+        let(:update_question) { attributes_for(:question) }
+        let(:params) { { id: question, question: update_question } }
+        before { patch :update, params: params, format: :js }
+
+        it 'assigns requested question to @question' do
+          expect(assigns(:question)).to eq(question)
+        end
+
+        it 'changes question attributes' do
+          question.reload
+          expect(question.title).to eq update_question[:title]
+          expect(question.body).to eq update_question[:body]
+        end
+
+        it 'it render update template' do
+          expect(response).to render_template :update
+        end
+      end
+
+      context 'not author of question' do
+        let(:question) { create(:question) }
+        it_behaves_like "can't update question"
+
+        it 'it render update template' do
+          params = { id: question, question: attributes_for(:question) }
+
+          patch :update, params: params, format: :js
+
+          expect(response).to render_template :update
+        end
+      end
+    end
+
+    context 'not sign in user' do
+      let(:question) { create(:question) }
+      it_behaves_like "can't update question"
+
+      it 'it returns unauthoried status' do
+        params = { id: question, question: attributes_for(:question) }
+        patch :update, params: params, format: :js
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'DELETE #destroy' do
     context 'sign in user' do
       sign_in_user

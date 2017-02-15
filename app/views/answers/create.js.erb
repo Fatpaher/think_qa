@@ -1,4 +1,7 @@
-$('.answers').append('<%= j render @answer %>');
-$('.form_errors').html('<%= j render 'shared/error_messages', target: @answer %>');
-$('.flash_messages').html('<%= j render 'layouts/flash_messages' %>');
-$('#answer_body').val('');
+<% if @answer.valid? %>
+  $('.answers').append('<%= j render @answer %>');
+  $('.flash_messages').html('<%= j render 'layouts/flash_messages' %>');
+  $('#answer_body').val('');
+<% else %>
+  $('.answer_form_errors').html('<%= j render 'shared/error_messages', target: @answer %>');
+<% end %>

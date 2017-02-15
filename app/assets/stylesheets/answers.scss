@@ -1,0 +1,10 @@
+.edit-answer {
+  display: none;
+}
+
+.best-answer-icon {
+  @extend .glyphicon;
+  @extend .glyphicon-ok;
+  color: #006400;
+  size: 2em;
+}

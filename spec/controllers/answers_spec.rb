@@ -70,6 +70,59 @@ describe AnswersController do
     end
   end
 
+  describe 'PATCH #update' do
+    let(:question) { create(:question) }
+    context 'sign in user' do
+      sign_in_user
+
+      context 'author of an answer' do
+        let(:answer) { create(:answer, question_id: question.id, user_id: @user.id) }
+        let(:update_answer) { attributes_for(:answer) }
+        let(:params) { { question_id: question.id, id: answer.id, answer: update_answer } }
+        before { patch :update, params: params, format: :js }
+
+        it 'assigns requested answer to @answer' do
+          expect(assigns(:answer)).to eq(answer)
+        end
+
+        it 'changes answer attribute' do
+          answer.reload
+          expect(answer.body).to eq update_answer[:body]
+        end
+
+        it 'render update template' do
+          expect(response).to render_template :update
+        end
+      end
+
+      context 'not author of answer' do
+        let(:answer) { create(:answer) }
+
+        it_behaves_like "can't update answer"
+
+        it 'render update template' do
+          params = { question_id: question.id, id: answer.id, answer: attributes_for(:answer) }
+
+          patch :update, params: params, format: :js
+
+          expect(response).to render_template :update
+        end
+      end
+    end
+
+    context 'not sign in user' do
+      let(:answer) { create(:answer, question_id: question.id) }
+
+      it_behaves_like "can't update answer"
+      it 'it returns unauthoried status' do
+        params = { question_id: question.id, id: answer.id, answer: attributes_for(:answer) }
+        patch :update, params: params, format: :js
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'DELETE #destroy' do
     let(:question) { create(:question) }
     context 'sign in user' do
@@ -80,13 +133,7 @@ describe AnswersController do
 
         it 'destroys answer to question' do
           params = { question_id: question.id, id: answer.id }
-          expect { delete :destroy, params: params }.to change(question.answers, :count).by(-1)
-        end
-
-        it 'redirect to question' do
-          params = { question_id: question.id, id: answer.id }
-          delete :destroy, params: params
-          expect(response).to redirect_to(question_path(question))
+          expect { delete :destroy, params: params, format: :js }.to change(question.answers, :count).by(-1)
         end
       end
 
@@ -97,7 +144,7 @@ describe AnswersController do
 
         it 're-reder answer page' do
           params = { question_id: question.id, id: answer.id }
-          delete :destroy, params: params
+          delete :destroy, params: params, format: :js
           expect(response).to render_template('questions/show')
         end
       end
@@ -108,10 +155,62 @@ describe AnswersController do
 
       it_behaves_like "can't delete answer"
 
-      it 'redirecto to sign in path' do
+      it 'it returns unauthoried status' do
         params = { question_id: question.id, id: answer.id }
-        delete :destroy, params: params
-        expect(response).to redirect_to(new_user_session_path)
+        delete :destroy, params: params, format: :js
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
+
+  describe 'PATCH #select_best' do
+    context 'sign in user' do
+      sign_in_user
+
+      context 'author of question' do
+        let(:question) { create(:question, user_id: @user.id) }
+        let(:answer) { create(:answer, question_id: question.id) }
+        let(:previos_best_answer) { create(:answer, :best_answer, question_id: question.id) }
+        let(:params) { { question_id: question.id, id: answer.id } }
+        before { patch :select_best, params: params, format: :js }
+
+        it 'assigns requested answer to @answer' do
+          expect(assigns(:answer)).to eq(answer)
+        end
+
+        it 'assigns requested answer question to @question' do
+          expect(assigns(:question)).to eq(question)
+        end
+
+        it 'set requested answer as best answer to question' do
+          answer.reload
+          expect(answer.best_answer).to be_truthy
+        end
+
+        it 'rensers #select_best template' do
+          expect(response).to render_template :select_best
+        end
+      end
+
+      context 'not author of question' do
+        let(:question) { create(:question) }
+        let(:answer) { create(:answer, question_id: question.id) }
+
+        it_behaves_like 'not change question best answer'
+      end
+    end
+
+    context 'not sign in user' do
+      let(:question) { create(:question) }
+      let(:answer) { create(:answer, question_id: question.id) }
+
+      it_behaves_like 'not change question best answer'
+
+      it 'it returns unauthoried status' do
+        params = { question_id: question.id, id: answer.id }
+        patch :select_best, params: params, format: :js
+
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

@@ -32,6 +32,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.extend ControllerHelper, type: :controller
   config.include FeatureHelper, type: :feature
+  config.include WaitForAjax, type: :feature
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 

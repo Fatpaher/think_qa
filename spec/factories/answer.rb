@@ -7,5 +7,9 @@ FactoryGirl.define do
     trait :invalid do
       body ''
     end
+
+    trait :best_answer do
+      best_answer true
+    end
   end
 end

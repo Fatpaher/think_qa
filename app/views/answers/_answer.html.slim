@@ -1,8 +1,32 @@
 - if answer.persisted?
-  li= answer.body
-  - if current_user&.author_of?(answer)
-    = link_to 'Delete',
-      question_answer_path(@question, answer),
-      class: 'btn btn-danger',
-      method: :delete,
-      data: { confirm: 'Are you shure want to delete this answer?' }
+  .answer id="answer-#{answer.id}"
+    - if answer.best_answer?
+      <span class="best-answer-icon"></span>
+    = answer.body
+    .edit-answer
+      = form_for answer, remote: true, html: { id: "edit-answer-#{answer.id}" } do |f|
+        .answer_edit_form_errors
+          = render "shared/error_messages", target: answer
+        = f.label :body, "Answer"
+        = f.text_area :body, value: answer.body
+        = f.submit 'Save'
+
+    - if current_user&.author_of?(answer)
+      = link_to 'Edit',
+        '#',
+        class: 'btn btn-default edit-answer-link',
+        data: { answer_id: answer.id }
+
+      = link_to 'Delete',
+        answer_path(answer),
+        method: :delete,
+        remote: true,
+        class: 'btn btn-danger',
+        data: { confirm: 'Are you shure want to delete this answer?' }
+    - if current_user&.author_of?(@question)
+      - unless answer.best_answer?
+        = link_to 'Best Answer',
+          select_best_answer_path(answer),
+          method: :patch,
+          remote: true,
+          class: 'btn btn-default best-answer-link'
