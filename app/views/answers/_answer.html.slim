@@ -3,6 +3,18 @@
     - if answer.best_answer?
       <span class="best-answer-icon"></span>
     = answer.body
+    ul.answer-attachments
+      - answer.attachments.each do |attachment|
+        li id="attachment-#{attachment.id}"
+          = link_to attachment.file.filename, attachment.file.url
+          - if current_user&.author_of?(answer)
+            = link_to 'Delete',
+              attachment_path(attachment),
+              class: 'btn btn-default',
+              remote: true,
+              method: :delete,
+              data: { confirm: 'Are you shure want to delete this attachment?' }
+
     .edit-answer
       = form_for answer, remote: true, html: { id: "edit-answer-#{answer.id}" } do |f|
         .answer_edit_form_errors

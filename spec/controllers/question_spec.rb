@@ -16,13 +16,36 @@ describe QuestionsController do
 
   describe 'GET #show' do
     let(:question) { create(:question) }
-    before { get :show, params: { id: question } }
-    it 'assigns requested question ot @question' do
-      expect(assigns(:question)).to eq(question)
+
+    context 'every user' do
+      before { get :show, params: { id: question } }
+
+      it 'assigns requested question ot @question' do
+        expect(assigns(:question)).to eq(question)
+      end
+
+      it 'renders :show template' do
+        expect(response).to render_template(:show)
+      end
     end
 
-    it 'renders :show template' do
-      expect(response).to render_template(:show)
+    context 'user signed in' do
+      sign_in_user
+      before { get :show, params: { id: question } }
+      it 'assigns new answer for question' do
+        expect(assigns(:answer)).to be_a_new(Answer)
+      end
+
+      it 'builds new attachment for answer' do
+        expect(assigns(:answer).attachments.first).to be_a_new(Attachment)
+      end
+    end
+
+    context 'user not signed in' do
+      before { get :show, params: { id: question } }
+      it 'not assigns new answer' do
+        expect(assigns(:answer)).not_to be_a_new(Answer)
+      end
     end
   end
 
@@ -36,6 +59,10 @@ describe QuestionsController do
 
       it 'renders :new template' do
         expect(response).to render_template(:new)
+      end
+
+      it 'builds new attachment for answer' do
+        expect(assigns(:question).attachments.first).to be_a_new(Attachment)
       end
     end
 

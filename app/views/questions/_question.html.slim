@@ -2,6 +2,17 @@
   h1= @question.title
 .question-body
   = @question.body
+ul.question-attahcments
+  - @question.attachments.each do |attachment|
+    li id="attachment-#{attachment.id}"
+      = link_to attachment.file.filename, attachment.file.url
+      - if current_user&.author_of?(question)
+        = link_to 'Delete',
+          attachment_path(attachment),
+          class: 'btn btn-default',
+          remote: true,
+          method: :delete,
+          data: { confirm: 'Are you shure want to delete this attachment?' }
 
 .edit-question
   = form_for @question, remote: true  do |f|

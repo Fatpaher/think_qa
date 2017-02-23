@@ -7,11 +7,15 @@ class QuestionsController < ApplicationController
 
   def show
     @question = Question.includes(:answers).find(params[:id])
-    @answer = @question.answers.new if user_signed_in?
+    if user_signed_in?
+      @answer = @question.answers.new
+      @answer.attachments.build
+    end
   end
 
   def new
     @question = Question.new
+    @question.attachments.build
   end
 
   def create
@@ -44,10 +48,11 @@ class QuestionsController < ApplicationController
       render :show
     end
   end
+
   private
 
   def question_params
-    params.require(:question).permit(:title, :body)
+    params.require(:question).permit(:title, :body, attachments_attributes: [:file, :id, :_delete])
   end
 
   def find_question

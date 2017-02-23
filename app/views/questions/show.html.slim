@@ -14,6 +14,18 @@ h3 Answers
     .form-group
       = f.label :body, 'Your Answer'
       = f.text_field :body
+
+    p Attachments
+    .form-group#attachments
+      h4 Attachments:
+      = f.fields_for :attachments do |a|
+        = render 'shared/attachment_fields', f: a
+      .form-group.links
+        = link_to_add_association 'Add File',
+                                  f,
+                                  :attachments,
+                                  partial: 'shared/attachment_fields',
+                                  class: 'btn btn-primary'
     = f.submit 'Post Answer', class: 'btn btn-submit'
 - else
   p To answer the question you must sign in

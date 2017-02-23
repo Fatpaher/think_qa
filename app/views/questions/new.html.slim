@@ -7,4 +7,14 @@ h1 Ask New Question
   .form-group
     = f.label :body
     = f.text_field :body
-  = f.submit class: 'btn btn-primary'
+  #attachments
+    h4 Attachments:
+    = f.fields_for :attachments do |a|
+      = render 'shared/attachment_fields', f: a
+    .form-group.links
+      = link_to_add_association 'Add File',
+                                f,
+                                :attachments,
+                                partial: 'shared/attachment_fields',
+                                class: 'btn btn-primary'
+    = f.submit class: 'btn btn-primary'
