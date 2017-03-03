@@ -50,3 +50,8 @@ shared_examples "can't delete attachment" do
     expect { delete :destroy, params: params, format: :js }.not_to change(Attachment, :count)
   end
 end
+
+shared_examples 'not change vote count' do
+  it 'not change votes' do
+  end
+end

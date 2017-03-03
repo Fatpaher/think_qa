@@ -23,6 +23,8 @@
         = f.text_area :body, value: answer.body
         = f.submit 'Save'
 
+    = render 'shared/votes', votable: answer
+
     - if current_user&.author_of?(answer)
       = link_to 'Edit',
         '#',

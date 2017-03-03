@@ -208,4 +208,14 @@ describe QuestionsController do
       end
     end
   end
+
+  describe 'POST #vote' do
+    let(:votable) { create(:question) }
+    it_behaves_like 'POST voted#vote'
+  end
+
+  describe 'DELETE #remove_vote' do
+    let(:votable) { create(:question) }
+    it_behaves_like 'DELETE voted#destroy_vote'
+  end
 end

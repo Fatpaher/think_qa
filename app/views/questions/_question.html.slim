@@ -36,3 +36,5 @@ ul.question-attahcments
     class: 'btn btn-danger',
     method: :delete,
     data: { confirm: 'Are you shure want to delete this question?' }
+
+= render 'shared/votes', votable: @question
