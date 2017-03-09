@@ -1,40 +1,42 @@
-.question-title
-  h1= @question.title
-.question-body
-  = @question.body
-ul.question-attahcments
-  - @question.attachments.each do |attachment|
-    li id="attachment-#{attachment.id}"
-      = link_to attachment.file.filename, attachment.file.url
-      - if current_user&.author_of?(question)
-        = link_to 'Delete',
-          attachment_path(attachment),
-          class: 'btn btn-default',
-          remote: true,
-          method: :delete,
-          data: { confirm: 'Are you shure want to delete this attachment?' }
+.question data-question_id="#{@question.id}"
+  .question-title
+    h1= @question.title
+  .question-body
+    = @question.body
+  ul.question-attahcments
+    - @question.attachments.each do |attachment|
+      li id="attachment-#{attachment.id}"
+        = link_to attachment.file.filename, attachment.file.url
+        - if current_user&.author_of?(question)
+          = link_to 'Delete',
+            attachment_path(attachment),
+            class: 'btn btn-default',
+            remote: true,
+            method: :delete,
+            data: { confirm: 'Are you shure want to delete this attachment?' }
 
-.edit-question
-  = form_for @question, remote: true  do |f|
-    .question_form_errors
-      = render "shared/error_messages", target: @question
-    .form-group
-      = f.label :title
-      = f.text_field :title, value: @question.title
-    .form-group
-      = f.label :body
-      = f.text_field :body, value: @question.body
-    = f.submit class: 'btn btn-default'
+  .edit-question
+    = form_for @question, remote: true  do |f|
+      .question_form_errors
+        = render "shared/error_messages", target: @question
+      .form-group
+        = f.label :title
+        = f.text_field :title, value: @question.title
+      .form-group
+        = f.label :body
+        = f.text_field :body, value: @question.body
+      = f.submit class: 'btn btn-default'
 
-- if current_user&.author_of?(@question)
-  = link_to 'Edit Question',
-    '#',
-    class: 'btn btn-default edit-question-link'
+  - if current_user&.author_of?(@question)
+    = link_to 'Edit Question',
+      '#',
+      class: 'btn btn-default edit-question-link'
 
-  = link_to 'Delete Question',
-    question_path(@question),
-    class: 'btn btn-danger',
-    method: :delete,
-    data: { confirm: 'Are you shure want to delete this question?' }
+    = link_to 'Delete Question',
+      question_path(@question),
+      class: 'btn btn-danger',
+      method: :delete,
+      data: { confirm: 'Are you shure want to delete this question?' }
 
-= render 'shared/votes', votable: @question
+  = render 'shared/votes', votable: @question
+  = render 'comments/comments', commentable: @question

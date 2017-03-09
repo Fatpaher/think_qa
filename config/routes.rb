@@ -14,6 +14,9 @@ Rails.application.routes.draw do
   end
   resources :attachments, only: [:destroy]
   resources :votes, only: [:create]
+  resources :comments, only: [:create]
 
   root to: "questions#index"
+
+  mount ActionCable.server => '/cable'
 end

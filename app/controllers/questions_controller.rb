@@ -1,10 +1,11 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:show, :index]
+  after_action :create_question, only: [:create]
 
   include Voted
 
   def index
-    @questions = Question.all
+    @questions = Question.ordered.all
   end
 
   def show
@@ -12,6 +13,7 @@ class QuestionsController < ApplicationController
     if user_signed_in?
       @answer = @question.answers.new
       @answer.attachments.build
+      @comment = Comment.new
     end
   end
 
@@ -59,5 +61,16 @@ class QuestionsController < ApplicationController
 
   def find_question
     Question.find(params[:id])
+  end
+
+  def create_question
+    return if @question.errors.any?
+    ActionCable.server.broadcast(
+      'questions',
+      ApplicationController.render(
+        partial: 'questions/question_preview',
+        locals: { question: @question }
+      )
+    )
   end
 end

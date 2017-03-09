@@ -1,0 +1,5 @@
+.vote-up-button, .vote-down-button, .reset-vote-button {
+  @extend .btn;
+  @extend .btn-default;
+}
+

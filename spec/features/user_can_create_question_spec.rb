@@ -4,28 +4,46 @@ feature 'user create new question' do
   context 'signed in' do
     before { sign_in create(:user) }
     scenario 'with valid attributes' do
-      question_title = 'New question'
-      question_body = 'question body'
+      question = attributes_for(:question)
 
       visit new_question_path
-      fill_in 'Title', with: question_title
-      fill_in 'Body', with: question_body
-      click_on 'Create Question'
+      create_question(question)
 
-      expect(page).to have_content(question_title)
-      expect(page).to have_content(question_body)
+      expect(page).to have_content(question[:title])
+      expect(page).to have_content(question[:body])
       expect(page).to have_content('Question successfully created')
     end
+
     scenario 'with invalid attributes' do
-      invalid_question_title = ''
-      question_body = 'question body'
+      invalid_question = attributes_for(:question, :invalid)
 
       visit new_question_path
-      fill_in 'Title', with: invalid_question_title
-      fill_in 'Body', with: question_body
-      click_on 'Create Question'
+      create_question(invalid_question)
+      create_question(invalid_question)
 
       expect(page).to have_content("Title can't be blank")
+    end
+  end
+
+  context 'multiple session' do
+    given(:user) { create :user }
+    given(:question) { attributes_for :question }
+    scenario "question appears in another user's page", js: true do
+      Capybara.using_session('user') do
+        sign_in user
+        visit questions_path
+      end
+      Capybara.using_session('guest') do
+        visit questions_path
+      end
+      Capybara.using_session('user') do
+        click_on 'Ask Question'
+        create_question(question)
+        expect(page).to have_content(question[:title])
+      end
+      Capybara.using_session('guest') do
+        expect(page).to have_content(question[:title])
+      end
     end
   end
 

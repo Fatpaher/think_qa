@@ -1,10 +1,12 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
+  after_action :create_answer, only: [:create]
 
   include Voted
 
   def create
     @answer = Question.find(params[:question_id]).answers.new(answer_params)
+    @question = @answer.question
     @answer.user = current_user
 
     if @answer.save
@@ -53,5 +55,17 @@ class AnswersController < ApplicationController
 
   def find_answer
     Answer.find(params[:id])
+  end
+
+  def create_answer
+    return if @answer.errors.any?
+    attachments = @answer.attachments.map(&:attributes)
+
+    ActionCable.server.broadcast(
+      "answers_for_question-#{@question.id}",
+      answer: @answer,
+      question: @question,
+      attachments: attachments
+    )
   end
 end

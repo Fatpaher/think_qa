@@ -1,0 +1,13 @@
+div class="#{stringify_class(commentable)}-comments"
+  ul.list-unstyled id="#{stringify_class(commentable)}-#{commentable.id}-comments"
+    = render commentable.comments
+  br
+  - if user_signed_in?
+    =link_to 'Add comment', '#', class: 'add-comment small'
+    .add-comment-form style='display: none'
+      = form_for commentable.comments.build, remote: true do |f|
+        = f.label :body, "Comment"
+        = f.text_area :body
+        = f.hidden_field :commentable_type, value: stringify_class(commentable)
+        = f.hidden_field :commentable_id, value: commentable.id
+        = f.submit 'Add', class: 'btn btn-submit'

@@ -26,6 +26,8 @@ gem 'devise'
 gem 'carrierwave'
 gem 'remotipart'
 gem 'cocoon'
+gem 'gon'
+gem 'skim'
 
 group :development, :test do
   gem 'byebug', platform: :mri

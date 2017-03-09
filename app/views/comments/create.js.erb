@@ -1,0 +1,8 @@
+<% if @comment.valid? %>
+    console.log('<%= "#{stringify_class(@commentable)}-#{@commentable.id}-comments" %>')
+  $("<%= "##{stringify_class(@commentable)}-#{@commentable.id}-comments" %>").append('<%= j render @comment %>');
+  $('.flash_messages').html('<%= j render 'layouts/flash_messages' %>');
+  $('#comment_body').val('');
+<% else %>
+  $('.comment_form_errors').html('<%= j render 'shared/error_messages', target: @answer %>');
+<% end %>

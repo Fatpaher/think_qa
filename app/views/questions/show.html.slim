@@ -1,10 +1,8 @@
-.question
-  = render @question
+= render @question
 h3 Answers
-- if @question.answers.present?
-  .answers
-    = render @question.answers
-- else
+.answers
+  = render @question.answers
+- unless @question.answers.present?
   p There is no answers yet
 
 - if user_signed_in?

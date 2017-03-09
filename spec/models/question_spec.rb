@@ -8,6 +8,7 @@ describe Question do
          inverse_of(:attachable)
        }
     it { is_expected.to have_many(:votes).dependent(:destroy) }
+    it { is_expected.to have_many(:comments).dependent(:destroy) }
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_one(:best_answer).
          conditions(best_answer: true).

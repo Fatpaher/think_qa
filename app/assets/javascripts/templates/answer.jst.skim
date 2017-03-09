@@ -1,0 +1,38 @@
+.answer id="answer-#{@answer.id}"
+  - if @answer.best_answer == true
+    span class="best-answer-icon"
+  = @answer.body
+  ul.answer-attachments
+    - for attachment in @attachments
+      li id="attachment-#{attachment.id}"
+        <a href="#{attachment.url}">#{attachment.file}</a>
+        - if gon.user_id == @answer.user_id
+          .a.btn btn-default data-confirm="Are you shure want to delete this attachment?" data-remote="true" rel="nofollow" data-method="delete" href="/attachments/#{attachment.id}"
+            | Delete
+
+  .edit-answer
+    form.edit_answer action="/answers/#{@answer.id}" data-remote="true" meghod="post" id="edit-answer-#{@answer.id}" accepts-charset="UTF-8"
+      input name="utf8" type="hidden" value="✓"
+      input type="hidden" name="_method" value="patch"
+      label for="answer_body"Answer
+      textarea name="answer[body]" id="answer_body" =@answer.body
+      input type="submit" name="commit" value="Save" data-disable-with="Save"
+
+  div id="rating-answer-#{@answer.id}"
+    | Rating #{@answer.rating}
+  - if gon.user_id && (@answer.user_id != gon.user_id)
+    div id="vote-buttons-answer-#{@answer.id}"
+      a.vote-up-button data-remote="true" rel="nofollow" data-method="post" href="/answers/#{@answer.id}/vote?value=1"
+        | +1
+      a.vote-down-button data-remote="true" rel="nofollow" data-method="post" href="/answers/#{@answer.id}/vote?value=-1"
+        | -1
+      a.reset-vote-button style="display: none" data-remote="true" rel="nofollow" data-method="delete" href="/answers/#{@answer.id}/destroy_vote"
+        | Reset Vote
+
+  - if gon.user_id == @answer.user_id
+    a.btn.btn-default.edit-answer-link data-answer-id="#{@answer.id}" href="#"
+      | Edit
+  - if gon.user_id == @question.user_id
+    a.btn.btn-default.best-answer-link data-method="patch" data-remote="true" href="/answers/#{@answer.id}/select_best"
+      | Best Answer
+hr
