@@ -18,7 +18,7 @@ feature 'user can delete attahcment for created answer' do
         click_on 'Delete'
         expect(page).not_to have_content(attachment.file.filename)
       end
-      expect(page).to have_content('Attachment successfully deleted')
+      expect(page).to have_content('Attachment was successfully destroyed')
     end
 
     scenario 'user is not author of answer' do

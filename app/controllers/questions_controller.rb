@@ -1,56 +1,40 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:show, :index]
+  before_action :find_question_with_answers, only: [:show]
+  before_action :build_answer, only: [:show]
+  before_action :load_question, only: [:update, :destroy]
+
   after_action :create_question, only: [:create]
+
+  respond_to :js, only: [:update]
 
   include Voted
 
   def index
-    @questions = Question.ordered.all
+    respond_with @questions = Question.ordered.all
   end
 
   def show
-    @question = Question.includes(:answers).find(params[:id])
-    if user_signed_in?
-      @answer = @question.answers.new
-      @answer.attachments.build
-      @comment = Comment.new
-    end
+    respond_with @question
   end
 
   def new
-    @question = Question.new
-    @question.attachments.build
+    respond_with @question = Question.new
   end
 
   def create
-    @question = Question.new(question_params)
-    @question.user = current_user
-
-    if @question.save
-      redirect_to question_path(@question), notice: 'Question successfully created'
-    else
-      render :new
-    end
+    respond_with @question = current_user.questions.create(question_params)
   end
 
   def update
-    @question = find_question
-    if current_user.author_of?(@question) && @question.update(question_params)
-      flash.now[:notice] = 'Question was successfully edit'
-    else
-      flash.now[:alert] = 'Error'
-    end
+    return unless current_user.author_of?(@question)
+    @question.update(question_params)
+    respond_with @question
   end
 
   def destroy
-    question = find_question
-    if current_user.author_of?(question)
-      question.destroy
-      redirect_to questions_path, notice: 'Question successfully deleted'
-    else
-      flash[:alert] = 'Error'
-      render :show
-    end
+    return unless current_user.author_of?(@question)
+    respond_with @question.destroy
   end
 
   private
@@ -59,8 +43,19 @@ class QuestionsController < ApplicationController
     params.require(:question).permit(:title, :body, attachments_attributes: [:file, :id, :_delete])
   end
 
-  def find_question
-    Question.find(params[:id])
+  def load_question
+    @question = Question.find(params[:id])
+  end
+
+  def find_question_with_answers
+    @question = Question.includes(:answers).find(params[:id])
+  end
+
+  def build_answer
+    if user_signed_in?
+      @answer = @question.answers.new
+      @answer.attachments.build
+    end
   end
 
   def create_question

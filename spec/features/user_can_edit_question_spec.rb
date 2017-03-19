@@ -18,7 +18,7 @@ feature 'user can edit question' do
         fill_in 'Body', with: edited_question[:body]
         click_on 'Update Question'
 
-        expect(page).to have_content('Question was successfully edit')
+        expect(page).to have_content('Question was successfully updated')
         expect(page).to have_content(edited_question[:title])
         expect(page).to have_content(edited_question[:body])
         expect(page).not_to have_content(question.title)

@@ -9,6 +9,7 @@ feature 'can add files to question' do
     visit new_question_path
     fill_in 'Title', with: question[:title]
     fill_in 'Body', with: question[:body]
+    click_on 'Add File'
   end
 
   scenario 'user can add file when create question', js:true do

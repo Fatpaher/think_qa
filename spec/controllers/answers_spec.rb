@@ -141,12 +141,6 @@ describe AnswersController do
         let(:answer) { create(:answer, question_id: question.id) }
 
         it_behaves_like "can't delete answer"
-
-        it 're-reder answer page' do
-          params = { question_id: question.id, id: answer.id }
-          delete :destroy, params: params, format: :js
-          expect(response).to render_template('questions/show')
-        end
       end
     end
 

@@ -1,50 +1,33 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
+  before_action :load_answer, only: [:update, :destroy, :select_best]
+  before_action :load_answer_question, only: [ :update, :destroy, :select_best ]
+
   after_action :create_answer, only: [:create]
+
+  respond_to :js
 
   include Voted
 
   def create
-    @answer = Question.find(params[:question_id]).answers.new(answer_params)
-    @question = @answer.question
-    @answer.user = current_user
-
-    if @answer.save
-      flash.now[:notice] = 'Answer succsesfully added'
-    else
-      flash.now[:alert] = 'Error'
-    end
+    @question = Question.find(params[:question_id])
+    respond_with @answer = @question.answers.create(answer_params.merge(user: current_user))
   end
 
   def update
-    @answer = find_answer
-    if current_user.author_of?(@answer) && @answer.update(answer_params)
-      flash.now[:notice] = 'Answer was successfully edit'
-    else
-      flash.now[:alert] = 'Error'
-    end
+    return unless current_user.author_of?(@answer)
+    @answer.update(answer_params)
+    respond_with  @answer
   end
 
   def destroy
-    @answer = find_answer
-    if current_user.author_of?(@answer)
-      @answer.destroy
-      flash.now[:notice] = 'Answer successfully deleted'
-    else
-      flash[:alert] = 'Error'
-      render 'questions/show'
-    end
+    return unless current_user.author_of?(@answer)
+    respond_with @answer.destroy
   end
 
   def select_best
-    @answer = find_answer
-    @question = @answer.question
-    if current_user.author_of?(@question)
-      @answer.select_best
-      flash.now[:notice] = 'Best Answer selected'
-    else
-      flash[:alert] = 'Error'
-    end
+    return unless current_user.author_of?(@question)
+    respond_with @answer.select_best
   end
 
   private
@@ -53,8 +36,12 @@ class AnswersController < ApplicationController
     params.require(:answer).permit(:body, attachments_attributes: [:file])
   end
 
-  def find_answer
-    Answer.find(params[:id])
+  def load_answer
+    @answer = Answer.find(params[:id])
+  end
+
+  def load_answer_question
+    @question = @answer.question
   end
 
   def create_answer

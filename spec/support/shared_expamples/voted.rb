@@ -38,11 +38,6 @@ shared_examples 'POST voted#vote' do
         it 'not change votes' do
           expect{ post :vote, params: params, format: :json }.not_to change(Vote, :count)
         end
-
-        it 'returns unprocessable_entity status' do
-          post :vote, params: params, format: :json
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
       end
     end
 

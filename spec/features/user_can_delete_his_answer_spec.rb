@@ -12,7 +12,7 @@ feature 'user visit question page' do
       visit question_path(question)
 
       click_on 'Delete'
-      expect(page).to have_content('Answer successfully deleted')
+      expect(page).to have_content('Answer was successfully destroyed')
       expect(page).not_to have_content(answer)
       expect(current_path).to eq(question_path(question))
     end

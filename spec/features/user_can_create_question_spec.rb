@@ -11,7 +11,7 @@ feature 'user create new question' do
 
       expect(page).to have_content(question[:title])
       expect(page).to have_content(question[:body])
-      expect(page).to have_content('Question successfully created')
+      expect(page).to have_content('Question was successfully created')
     end
 
     scenario 'with invalid attributes' do

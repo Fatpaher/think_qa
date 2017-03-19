@@ -21,7 +21,7 @@ feature 'user can edit answer' do
           click_on 'Save'
         end
 
-        expect(page).to have_content('Answer was successfully edit')
+        expect(page).to have_content('Answer was successfully updated')
         expect(page).to have_content(edited_answer[:body])
         expect(page).not_to have_content(answer.body)
       end

@@ -9,16 +9,19 @@ div id="rating-#{stringify_class(votable)}-#{votable&.id}"
           polymorphic_path([:vote, votable], value: 1),
           remote: true,
           method: :post,
+          data: {type: :json},
           class: 'vote-up-button'
         =link_to '-1',
           polymorphic_path([:vote, votable], value: -1),
           remote: true,
           method: :post,
+          data: {type: :json},
           class: 'vote-down-button'
         =link_to 'Reset Vote',
           polymorphic_path([:destroy_vote,  votable]),
           remote: true,
           method: :delete,
+          data: {type: :json},
           class: 'reset-vote-button',
           style: 'display: none'
     - else
@@ -27,16 +30,19 @@ div id="rating-#{stringify_class(votable)}-#{votable&.id}"
           polymorphic_path([:vote, votable], value: 1),
           remote: true,
           method: :post,
+          data: {type: :json},
           class: 'vote-up-button',
           style: 'display: none'
         =link_to '-1',
           polymorphic_path([:vote, votable], value: -1),
           remote: true,
           method: :post,
+          data: {type: :json},
           class: 'vote-down-button',
           style: 'display: none'
         =link_to 'Reset Vote',
           polymorphic_path([:destroy_vote,  votable]),
           remote: true,
           method: :delete,
+          data: {type: :json},
           class: 'reset-vote-button'

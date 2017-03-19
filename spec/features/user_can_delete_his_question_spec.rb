@@ -12,7 +12,7 @@ feature 'user visit question page' do
 
       click_on 'Delete Question'
       expect(current_path).to eq(questions_path)
-      expect(page).to have_content('Question successfully deleted')
+      expect(page).to have_content('Question was successfully destroyed')
     end
 
     scenario "can't delete question not belon to him" do

@@ -60,10 +60,6 @@ describe QuestionsController do
       it 'renders :new template' do
         expect(response).to render_template(:new)
       end
-
-      it 'builds new attachment for answer' do
-        expect(assigns(:question).attachments.first).to be_a_new(Attachment)
-      end
     end
 
     context 'user not signed in' do
@@ -189,11 +185,6 @@ describe QuestionsController do
         let(:question) { create(:question) }
 
         it_behaves_like "can't delete question"
-
-        it 're-reder question page' do
-          delete :destroy, params: { id: question }
-          expect(response).to render_template('questions/show')
-        end
       end
     end
 
