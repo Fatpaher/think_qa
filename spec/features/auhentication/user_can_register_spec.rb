@@ -14,7 +14,9 @@ feature 'user can registrate' do
       click_on 'Sign up'
     end
 
-    expect(page).to have_content("Welcome! You have signed up successfully.")
+    open_email(email)
+
+    expect(current_email).to have_content 'Confirm my account'
   end
 
   scenario 'with invalid password confirmation' do

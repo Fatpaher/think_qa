@@ -1,0 +1,8 @@
+h2 Please add missed data:
+.email-confirmation
+  = form_for :auth, url: update_user_path, method: :post do |f|
+    .form-group
+      = f.label :email
+      = f.text_field :email
+    .form-group
+      = f.submit 'Add'

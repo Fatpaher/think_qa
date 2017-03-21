@@ -9,7 +9,7 @@ end
 gem 'rails', '~> 5.0.1'
 gem 'pg', '~> 0.18'
 gem 'puma', '~> 3.0'
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 5.0', '>= 5.0.6'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2'
 
@@ -28,7 +28,10 @@ gem 'remotipart'
 gem 'cocoon'
 gem 'gon'
 gem 'skim'
-gem 'responders', '~> 2.0' 
+gem 'responders', '~> 2.0'
+gem 'omniauth'
+gem 'omniauth-facebook'
+gem 'omniauth-twitter'
 
 group :development, :test do
   gem 'byebug', platform: :mri
@@ -36,6 +39,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.5'
   gem 'factory_girl_rails'
   gem 'capybara-webkit'
+  gem 'letter_opener'
+  gem 'capybara-email'
 end
 
 group :development do
