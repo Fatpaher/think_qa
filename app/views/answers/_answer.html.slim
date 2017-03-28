@@ -7,7 +7,7 @@
       - answer.attachments.each do |attachment|
         li id="attachment-#{attachment.id}"
           = link_to attachment.file.filename, attachment.file.url
-          - if current_user&.author_of?(answer)
+          - if can? :destroy, attachment
             = link_to 'Delete',
               attachment_path(attachment),
               class: 'btn btn-default',
@@ -25,19 +25,21 @@
 
     = render 'shared/votes', votable: answer
 
-    - if current_user&.author_of?(answer)
+    - if can? :edit, answer
       = link_to 'Edit',
         '#',
         class: 'btn btn-default edit-answer-link',
         data: { answer_id: answer.id }
 
+    - if can? :destroy, answer
       = link_to 'Delete',
         answer_path(answer),
         method: :delete,
         remote: true,
         class: 'btn btn-danger',
         data: { confirm: 'Are you shure want to delete this answer?' }
-    - if current_user&.author_of?(@question)
+
+    - if can? :select_best, answer
       - unless answer.best_answer?
         = link_to 'Best Answer',
           select_best_answer_path(answer),

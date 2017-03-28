@@ -1,48 +1,50 @@
 div id="rating-#{stringify_class(votable)}-#{votable&.id}"
   | Rating #{votable.rating}
 
-- if user_signed_in?
-  - unless current_user.author_of?(votable)
-    - unless current_user.voted_for(votable)
-      div id="vote-buttons-#{stringify_class(votable)}-#{votable&.id}"
-        =link_to '+1',
-          polymorphic_path([:vote, votable], value: 1),
-          remote: true,
-          method: :post,
-          data: {type: :json},
-          class: 'vote-up-button'
-        =link_to '-1',
-          polymorphic_path([:vote, votable], value: -1),
-          remote: true,
-          method: :post,
-          data: {type: :json},
-          class: 'vote-down-button'
-        =link_to 'Reset Vote',
-          polymorphic_path([:destroy_vote,  votable]),
-          remote: true,
-          method: :delete,
-          data: {type: :json},
-          class: 'reset-vote-button',
-          style: 'display: none'
-    - else
-      div id="vote-buttons-#{stringify_class(votable)}-#{votable&.id}"
-        =link_to '+1',
-          polymorphic_path([:vote, votable], value: 1),
-          remote: true,
-          method: :post,
-          data: {type: :json},
-          class: 'vote-up-button',
-          style: 'display: none'
-        =link_to '-1',
-          polymorphic_path([:vote, votable], value: -1),
-          remote: true,
-          method: :post,
-          data: {type: :json},
-          class: 'vote-down-button',
-          style: 'display: none'
-        =link_to 'Reset Vote',
-          polymorphic_path([:destroy_vote,  votable]),
-          remote: true,
-          method: :delete,
-          data: {type: :json},
-          class: 'reset-vote-button'
+- if current_user&.voted_for(votable)
+  div id="vote-buttons-#{stringify_class(votable)}-#{votable&.id}"
+    - if can? :vote, votable
+      =link_to '+1',
+              polymorphic_path([:vote, votable], value: 1),
+              remote: true,
+              method: :post,
+              data: {type: :json},
+              class: 'vote-up-button',
+              style: 'display: none'
+      =link_to '-1',
+              polymorphic_path([:vote, votable], value: -1),
+              remote: true,
+              method: :post,
+              data: {type: :json},
+              class: 'vote-down-button',
+              style: 'display: none'
+    - if can? :destroy_vote, votable
+      =link_to 'Reset Vote',
+              polymorphic_path([:destroy_vote,  votable]),
+              remote: true,
+              method: :delete,
+              data: {type: :json},
+              class: 'reset-vote-button'
+- else
+  div id="vote-buttons-#{stringify_class(votable)}-#{votable&.id}"
+    - if can? :vote, votable
+      =link_to '+1',
+              polymorphic_path([:vote, votable], value: 1),
+              remote: true,
+              method: :post,
+              data: {type: :json},
+              class: 'vote-up-button'
+      =link_to '-1',
+              polymorphic_path([:vote, votable], value: -1),
+              remote: true,
+              method: :post,
+              data: {type: :json},
+              class: 'vote-down-button'
+    - if can? :destroy_vote, votable
+      =link_to 'Reset Vote',
+              polymorphic_path([:destroy_vote,  votable]),
+              remote: true,
+              method: :delete,
+              data: {type: :json},
+              class: 'reset-vote-button',
+              style: 'display: none'

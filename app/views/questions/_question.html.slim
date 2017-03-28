@@ -7,7 +7,7 @@
     - @question.attachments.each do |attachment|
       li id="attachment-#{attachment.id}"
         = link_to attachment.file.filename, attachment.file.url
-        - if current_user&.author_of?(question)
+        - if can? :destroy, attachment
           = link_to 'Delete',
             attachment_path(attachment),
             class: 'btn btn-default',
@@ -27,11 +27,12 @@
         = f.text_field :body, value: @question.body
       = f.submit class: 'btn btn-default'
 
-  - if current_user&.author_of?(@question)
+  - if can? :edit, @question
     = link_to 'Edit Question',
       '#',
       class: 'btn btn-default edit-question-link'
 
+  - if can? :destroy, @question
     = link_to 'Delete Question',
       question_path(@question),
       class: 'btn btn-danger',

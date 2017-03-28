@@ -4,7 +4,7 @@ nav.navbar.navbar-default
       a.navbar-brand href="#{root_path}"  TinkQA
     .collapse.navbar-collapse
       ul.nav.navbar-nav
-        li= link_to 'Question', questions_path
+        li= link_to 'Questions', questions_path
       ul.nav.navbar-nav.navbar-right
         - if user_signed_in?
           li= link_to 'Log out', destroy_user_session_path, method: :delete

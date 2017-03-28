@@ -3,6 +3,7 @@ div class="#{stringify_class(commentable)}-comments"
     = render commentable.comments
   br
   - if user_signed_in?
+  - if can? :create, Comment
     =link_to 'Add comment', '#', class: 'add-comment small'
     .add-comment-form style='display: none'
       = form_for commentable.comments.build, remote: true do |f|

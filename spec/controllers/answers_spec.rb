@@ -100,12 +100,12 @@ describe AnswersController do
 
         it_behaves_like "can't update answer"
 
-        it 'render update template' do
+        it 'returns forbidden status' do
           params = { question_id: question.id, id: answer.id, answer: attributes_for(:answer) }
 
           patch :update, params: params, format: :js
 
-          expect(response).to render_template :update
+          expect(response).to have_http_status :forbidden
         end
       end
     end

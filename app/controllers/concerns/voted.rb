@@ -8,17 +8,15 @@ module Voted
   end
 
   def vote
-    if current_user.author_of?(@votable) || current_user.voted_for(@votable)
-      return render(json: { message: 'error' }, status: :forbidden)
-    end
+    authorize! :vote, @votable
     @vote = current_user.votes.create(value: params[:value], votable: @votable)
     respond_with({vote: @vote, votable: @votable}, location: @votable)
   end
 
 
   def destroy_vote
+    authorize! :destroy_vote, @votable
     @vote = Vote.where(user: current_user).first
-    return render(json: { message: 'error' }, status: :forbidden) unless @vote
     @vote.destroy
     respond_with @vote do |format|
       format.json { render json: { vote: @vote, votable: @votable.reload} }

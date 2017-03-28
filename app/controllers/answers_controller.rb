@@ -9,24 +9,23 @@ class AnswersController < ApplicationController
 
   include Voted
 
+  authorize_resource
+
   def create
     @question = Question.find(params[:question_id])
     respond_with @answer = @question.answers.create(answer_params.merge(user: current_user))
   end
 
   def update
-    return unless current_user.author_of?(@answer)
     @answer.update(answer_params)
     respond_with  @answer
   end
 
   def destroy
-    return unless current_user.author_of?(@answer)
     respond_with @answer.destroy
   end
 
   def select_best
-    return unless current_user.author_of?(@question)
     respond_with @answer.select_best
   end
 

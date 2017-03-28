@@ -141,12 +141,12 @@ describe QuestionsController do
         let(:question) { create(:question) }
         it_behaves_like "can't update question"
 
-        it 'it render update template' do
+        it 'returns forbiddent status' do
           params = { id: question, question: attributes_for(:question) }
 
           patch :update, params: params, format: :js
 
-          expect(response).to render_template :update
+          expect(response).to have_http_status :forbidden
         end
       end
     end

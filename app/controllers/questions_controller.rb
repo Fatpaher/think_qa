@@ -8,6 +8,8 @@ class QuestionsController < ApplicationController
 
   respond_to :js, only: [:update]
 
+  authorize_resource
+
   include Voted
 
   def index
@@ -27,13 +29,11 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    return unless current_user.author_of?(@question)
     @question.update(question_params)
     respond_with @question
   end
 
   def destroy
-    return unless current_user.author_of?(@question)
     respond_with @question.destroy
   end
 
