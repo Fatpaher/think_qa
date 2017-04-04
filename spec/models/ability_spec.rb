@@ -24,7 +24,10 @@ describe Ability do
     let(:other_user) { create :user }
 
     it { is_expected.to_not be_able_to :manage, :all }
-    it { is_expected.to be_able_to :read, :all }
+
+    it { is_expected.to be_able_to :read, Question }
+    it { is_expected.to be_able_to :read, Answer }
+    it { is_expected.to be_able_to :read, Comment }
 
     context 'Question' do
       let(:user_question) { create(:question, user: user) }
@@ -127,6 +130,20 @@ describe Ability do
       context 'create' do
         it { is_expected.to be_able_to :create, comment_to_question }
         it { is_expected.to be_able_to :create, comment_to_answer }
+      end
+    end
+
+    context 'Api' do
+      context 'v1' do
+        context 'Profiles' do
+          context 'index' do
+            it { is_expected.to be_able_to :index, user }
+          end
+          context 'me' do
+            it { is_expected.to be_able_to :me, user }
+            it { is_expected.not_to be_able_to :me, other_user }
+          end
+        end
       end
     end
   end
