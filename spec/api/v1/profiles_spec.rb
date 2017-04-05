@@ -3,16 +3,10 @@ require 'rails_helper'
 describe 'Profile API' do
 
   describe 'GET /me' do
-    context 'unauthoried' do
-      it 'returns 401 status if there is no access token' do
-        get '/api/v1/profiles/me', as: :json
-        expect(response.status).to eq 401
-      end
-
-      it 'returns 401 status if access token invalid' do
-        get '/api/v1/profiles/me', params: { access_token: '12345'}, as: :json
-        expect(response.status).to eq 401
-      end
+    context 'unauthorised' do
+      let(:path) {'/api/v1/profiles/me' }
+      let(:method) { :get }
+      it_behaves_like 'unauthorised'
     end
 
     context 'autirized' do
@@ -41,15 +35,9 @@ describe 'Profile API' do
 
   describe 'GET #index' do
     context 'unauthoried' do
-      it 'returns 401 status if there is no access token' do
-        get '/api/v1/profiles', as: :json
-        expect(response.status).to eq 401
-      end
-
-      it 'returns 401 status if access token invalid' do
-        get '/api/v1/profiles', params: { access_token: '12345'}, as: :json
-        expect(response.status).to eq 401
-      end
+      let(:path) { '/api/v1/profiles' }
+      let(:method) { :get }
+      it_behaves_like 'unauthorised'
     end
 
     context 'autirized' do
