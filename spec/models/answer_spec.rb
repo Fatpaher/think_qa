@@ -4,17 +4,15 @@ describe Answer do
   context 'assosiations' do
     it { is_expected.to belong_to(:question) }
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to have_many(:attachments).
-         dependent(:destroy).
-         inverse_of(:attachable)
-       }
   end
 
   context 'validations' do
     it { is_expected.to validate_presence_of(:body) }
   end
 
-  it { is_expected.to accept_nested_attributes_for(:attachments) }
+  it_behaves_like 'Votable'
+  it_behaves_like 'Attachable'
+  it_behaves_like 'Commentable'
 
   describe '#select_best' do
     let(:question) { create(:question) }
