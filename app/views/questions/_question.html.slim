@@ -39,5 +39,20 @@
       method: :delete,
       data: { confirm: 'Are you shure want to delete this question?' }
 
+  .subscribe
+    - if signed_in?
+      - if current_user.subscribed?(@question)
+        = link_to 'Unsubscribe',
+            subscription_path(current_user.subscription_to(question)),
+            method: :delete,
+            remote: true,
+            class: 'btn btn-default'
+      - else
+        = link_to 'Subscribe',
+            question_subscriptions_path(question),
+            method: :post,
+            remote: true,
+            class: 'btn btn-default'
+
   = render 'shared/votes', votable: @question
   = render 'comments/comments', commentable: @question

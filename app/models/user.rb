@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_many :votes
   has_many :comments
   has_many :authorizations
+  has_many :subscriptions
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -36,5 +37,13 @@ class User < ApplicationRecord
 
   def voted_for(votable)
     !!votable.votes.find_by(user_id: id)
+  end
+
+  def subscribed?(question)
+    subscriptions.where(question_id: question.id).exists?
+  end
+
+  def subscription_to(question)
+    subscriptions.where(question_id: question.id).first
   end
 end

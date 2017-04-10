@@ -30,4 +30,15 @@ describe Answer do
       expect(previos_best_answer).not_to be_best_answer
     end
   end
+
+  describe '#notify_subscriber' do
+    let(:user) { create :user }
+    let(:question) { create :question, user: user }
+    subject { build :answer, question: question }
+
+    it 'should notify subscribed users' do
+      expect(QuestionNotifierJob).to receive(:perform_later).with(subject)
+      subject.save!
+    end
+  end
 end
