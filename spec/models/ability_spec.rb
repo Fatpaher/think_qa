@@ -9,6 +9,7 @@ describe Ability do
     it { is_expected.to be_able_to :read, Question }
     it { is_expected.to be_able_to :read, Answer }
     it { is_expected.to be_able_to :read, Comment }
+    it { should be_able_to :read, Search }
 
     it { is_expected.not_to be_able_to :manage, :all }
   end

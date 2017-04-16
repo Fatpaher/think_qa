@@ -65,5 +65,10 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   Capybara.server = :puma
   Capybara.javascript_driver = :webkit
+
+  config.before(:each, sphinx: true) do
+    # For tests tagged with Sphinx, use deletion (or truncation)
+    DatabaseCleaner.strategy = :deletion
+  end
 end
 
