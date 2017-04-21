@@ -12,6 +12,7 @@ gem 'puma', '~> 3.0'
 gem 'sass-rails', '~> 5.0', '>= 5.0.6'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2'
+gem 'sprockets'
 
 gem 'jquery-rails'
 gem 'turbolinks', '~> 5'
@@ -20,6 +21,8 @@ gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+gem 'dotenv'
+gem 'dotenv-rails', require: 'dotenv/rails'
 gem 'slim'
 gem 'bootstrap-sass'
 gem 'devise'
@@ -41,6 +44,15 @@ gem 'sidekiq'
 gem 'whenever'
 gem 'mysql2'
 gem 'thinking-sphinx'
+gem 'therubyracer'
+
+group :development do
+  gem 'capistrano', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rails', require: false
+  gem 'capistrano-rvm', require: false
+  gem 'capistrano-sidekiq', require: false
+end
 
 group :development, :test do
   gem 'byebug', platform: :mri
