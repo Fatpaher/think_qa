@@ -1,10 +1,10 @@
 # paths
-app_path = "/home/deplo/think_qa"
+app_path = "/home/deploy/think_qa"
 working_directory "#{app_path}/current"
 pid               "#{app_path}/current/tmp/pids/unicorn.pid"
 
 # listen
-listen "/tmp/unicorn.think_qa.sock", backlog: 64
+listen "#{app_path}/current/tmp/sockets/unicorn.think_qa.sock", backlog: 64
 
 # logging
 stderr_path "log/unicorn.stderr.log"
