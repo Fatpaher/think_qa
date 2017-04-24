@@ -45,6 +45,7 @@ gem 'whenever'
 gem 'mysql2'
 gem 'thinking-sphinx'
 gem 'therubyracer'
+gem 'unicorn'
 
 group :development do
   gem 'capistrano', require: false
@@ -52,6 +53,7 @@ group :development do
   gem 'capistrano-rails', require: false
   gem 'capistrano-rvm', require: false
   gem 'capistrano-sidekiq', require: false
+  gem 'capistrano3-unicorn', require: false
 end
 
 group :development, :test do
