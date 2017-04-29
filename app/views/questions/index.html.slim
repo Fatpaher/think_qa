@@ -1,5 +1,6 @@
 - if can? :create, Question
   = link_to 'Ask Question', new_question_path, class: 'btn btn-primary'
-.questions-list
-- @questions.each do |question|
-  = render partial: 'question_preview', locals: { question: question }
+- cache collection_cache_key_for :question do
+  .questions-list
+  - @questions.each do |question|
+    = render partial: 'question_preview', locals: { question: question }
