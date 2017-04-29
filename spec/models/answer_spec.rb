@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Answer do
   context 'assosiations' do
-    it { is_expected.to belong_to(:question) }
+    it { is_expected.to belong_to(:question).touch(true) }
     it { is_expected.to belong_to(:user) }
   end
 

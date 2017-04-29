@@ -1,50 +1,52 @@
-- if answer.persisted?
-  .answer id="answer-#{answer.id}"
-    - if answer.best_answer?
-      <span class="best-answer-icon"></span>
-    = answer.body
-    ul.answer-attachments
-      - answer.attachments.each do |attachment|
-        li id="attachment-#{attachment.id}"
-          = link_to attachment.file.filename, attachment.file.url
-          - if can? :destroy, attachment
-            = link_to 'Delete',
-              attachment_path(attachment),
-              class: 'btn btn-default',
-              remote: true,
-              method: :delete,
-              data: { confirm: 'Are you shure want to delete this attachment?' }
+- cache answer do
+  - if answer.persisted?
+    .answer id="answer-#{answer.id}"
+      - if answer.best_answer?
+        <span class="best-answer-icon"></span>
+      = answer.body
+      ul.answer-attachments
+        - cache collection_cache_key_for :attachment do
+          - answer.attachments.each do |attachment|
+            li id="attachment-#{attachment.id}"
+              = link_to attachment.file.filename, attachment.file.url
+              - if can? :destroy, attachment
+                = link_to 'Delete',
+                  attachment_path(attachment),
+                  class: 'btn btn-default',
+                  remote: true,
+                  method: :delete,
+                  data: { confirm: 'Are you shure want to delete this attachment?' }
 
-    .edit-answer
-      = form_for answer, remote: true, html: { id: "edit-answer-#{answer.id}" } do |f|
-        .answer_edit_form_errors
-          = render "shared/error_messages", target: answer
-        = f.label :body, "Answer"
-        = f.text_area :body, value: answer.body
-        = f.submit 'Save'
+      .edit-answer
+        = form_for answer, remote: true, html: { id: "edit-answer-#{answer.id}" } do |f|
+          .answer_edit_form_errors
+            = render "shared/error_messages", target: answer
+          = f.label :body, "Answer"
+          = f.text_area :body, value: answer.body
+          = f.submit 'Save'
 
-    = render 'shared/votes', votable: answer
+      = render 'shared/votes', votable: answer
 
-    - if can? :edit, answer
-      = link_to 'Edit',
-        '#',
-        class: 'btn btn-default edit-answer-link',
-        data: { answer_id: answer.id }
+      - if can? :edit, answer
+        = link_to 'Edit',
+          '#',
+          class: 'btn btn-default edit-answer-link',
+          data: { answer_id: answer.id }
 
-    - if can? :destroy, answer
-      = link_to 'Delete',
-        answer_path(answer),
-        method: :delete,
-        remote: true,
-        class: 'btn btn-danger',
-        data: { confirm: 'Are you shure want to delete this answer?' }
-
-    - if can? :select_best, answer
-      - unless answer.best_answer?
-        = link_to 'Best Answer',
-          select_best_answer_path(answer),
-          method: :patch,
+      - if can? :destroy, answer
+        = link_to 'Delete',
+          answer_path(answer),
+          method: :delete,
           remote: true,
-          class: 'btn btn-default best-answer-link'
-    = render 'comments/comments', commentable: answer
-hr
+          class: 'btn btn-danger',
+          data: { confirm: 'Are you shure want to delete this answer?' }
+
+      - if can? :select_best, answer
+        - unless answer.best_answer?
+          = link_to 'Best Answer',
+            select_best_answer_path(answer),
+            method: :patch,
+            remote: true,
+            class: 'btn btn-default best-answer-link'
+      = render 'comments/comments', commentable: answer
+  hr

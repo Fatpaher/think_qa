@@ -46,6 +46,7 @@ gem 'mysql2'
 gem 'thinking-sphinx'
 gem 'therubyracer'
 gem 'unicorn'
+gem 'redis-rails'
 
 group :development do
   gem 'capistrano', require: false
